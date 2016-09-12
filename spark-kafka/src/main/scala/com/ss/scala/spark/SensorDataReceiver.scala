@@ -20,21 +20,18 @@ object SensorDataReceiver extends App {
   props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
   props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-  implicit val system = ActorSystem("my-system")
+  implicit val system = ActorSystem("sensor-data-receiver")
   implicit val materializer = ActorMaterializer()
-  // needed for the future flatMap/onComplete in the end
   implicit val executionContext = system.dispatcher
+
+  val producer = new KafkaProducer[String, String](props);
 
   val route =
     post {
       path("") {
         entity(as[String]) { payload =>
-          println(payload)
           val rec = new ProducerRecord[String, String]("weather", 0, java.util.UUID.randomUUID().toString, payload)
-          val producer = new KafkaProducer[String, String](props);
           producer.send(rec)
-          producer.close()
-          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, ""))
           complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, ""))
         }
       }
@@ -44,5 +41,10 @@ object SensorDataReceiver extends App {
 
   println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
   StdIn.readLine()
-  bindingFuture.flatMap(_.unbind()).onComplete(_ => system.terminate())
+
+  bindingFuture.flatMap(_.unbind()).onComplete { _ =>
+    producer.close()
+    system.terminate()
+  }
+
 }
