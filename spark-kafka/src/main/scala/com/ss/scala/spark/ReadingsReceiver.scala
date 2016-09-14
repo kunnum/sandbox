@@ -8,19 +8,23 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
+import org.apache.kafka.common.serialization.StringSerializer
 import scala.io.StdIn
+import java.util.UUID
 
 /**
  * Created by meeraj on 10/09/16.
  */
-object SensorDataReceiver extends App {
+object ReadingsReceiver extends App {
+
+  type PR = ProducerRecord[String, String]
 
   val props = new Properties();
   props.put("bootstrap.servers", "localhost:9092");
-  props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-  props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+  props.put("key.serializer", classOf[StringSerializer].getCanonicalName);
+  props.put("value.serializer", classOf[StringSerializer].getCanonicalName);
 
-  implicit val system = ActorSystem("sensor-data-receiver")
+  implicit val system = ActorSystem("readings-data-receiver")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
@@ -30,7 +34,7 @@ object SensorDataReceiver extends App {
     post {
       path("") {
         entity(as[String]) { payload =>
-          val rec = new ProducerRecord[String, String]("weather", 0, java.util.UUID.randomUUID().toString, payload)
+          val rec = new PR("readings", 0, UUID.randomUUID().toString, payload)
           producer.send(rec)
           complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, ""))
         }

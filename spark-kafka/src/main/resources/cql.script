@@ -1,20 +1,7 @@
-create keyspace weather with replication = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
+create keyspace demo with
+replication = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
 
-create table weather.temperature (
-    location_id text,
-    event_time timestamp,
-    temp_min text,
-    temp_max text,
-    temp_mean text,
-    temp_count text,
-    temp_std text,
-    primary key (location_id, event_time)
+create table demo.power_usage (
+    location text primary key,
+    usage text
 );
-
-create table weather.location(location_id text primary key, location_name text);
-
-insert into weather.location(location_id, location_name)  values ('1', 'London');
-insert into weather.location(location_id, location_name)  values ('2', 'Glasgow');
-insert into weather.location(location_id, location_name)  values ('3', 'Belfast');
-insert into weather.location(location_id, location_name)  values ('4', 'Cardiff');
-insert into weather.location(location_id, location_name)  values ('5', 'Birmingham');
