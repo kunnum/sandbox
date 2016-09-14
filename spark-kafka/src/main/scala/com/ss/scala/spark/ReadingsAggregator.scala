@@ -1,7 +1,5 @@
 package com.ss.scala.spark
 
-import java.util.Date
-
 import org.apache.spark._
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.kafka._
