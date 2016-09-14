@@ -3,9 +3,8 @@
 <head>
     <title>UK Power Grid Temperature</title>
     <meta charset="utf-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta http-equiv="refresh" content="30">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
 </head>
 <body>
@@ -22,12 +21,6 @@
         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
         id: 'mapbox.streets'
     }).addTo(mymap);
-
-    var popupLocation1 = new L.LatLng(51.507, -0.129);
-    var popupLocation2 = new L.LatLng(52.486, -1.890);
-    var popupLocation3 = new L.LatLng(51.486, -3.179);
-    var popupLocation4 = new L.LatLng(55.864, -4.251);
-    var popupLocation5 = new L.LatLng(54.597, -5.930);
 
     popup1 = new L.Popup();
     popup1.setLatLng(new L.LatLng(51.507, -0.129));
