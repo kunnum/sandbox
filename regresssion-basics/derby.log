@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Wed Sep 28 10:44:54 GST 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance a816c00e-0157-6f89-f416-000010536fc8 
+on database directory /Users/meeraj/Projects/sandbox/regresssion-basics/metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@60abe420 
+Loaded from file:/Users/meeraj/Software/spark-2.0.0-bin-hadoop2.7/jars/derby-10.11.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_20-b26
+user.dir=/Users/meeraj/Projects/sandbox/regresssion-basics
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.10.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
