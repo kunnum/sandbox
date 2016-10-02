@@ -19,3 +19,4 @@ dist
 /bin
 derby.log
 metastore_db/
+project/target/
