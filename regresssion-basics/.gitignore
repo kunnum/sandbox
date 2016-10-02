@@ -17,3 +17,5 @@ dist
 *.classpath
 .DS_Store
 /bin
+derby.log
+metastore_db/
