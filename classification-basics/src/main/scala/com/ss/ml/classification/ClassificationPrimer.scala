@@ -17,48 +17,26 @@ object ClassificationPrimer extends App {
   val df = spark.read.option("header", "true").option("inferSchema", "true").csv("amazon_baby.csv")
   df.show(10)
 
-  val keywords = Array("awesome",
-    "great",
-    "fantastic",
-    "amazing",
-    "love",
-    "horrible",
-    "bad",
-    "terrible",
-    "awful",
-    "wow",
-    "hate")
+  val keywords = Array("awesome", "great", "fantastic", "amazing", "love", "horrible", "bad",
+    "terrible", "awful", "wow", "hate")
 
   val filterWords = udf(
-    (x: String) =>
-      if (x != null)
-        x.split(" ").filter(keywords.contains(_)).mkString(" ")
-      else ""
+    (x: String) => if (x != null) x.split(" ").filter(keywords.contains(_)).mkString(" ") else ""
   )
   val isGood = udf((x: Int) => if (x >= 4) 1 else 0)
 
-  val data = df.where("rating != 3").where("review != ''").withColumn("label", isGood('rating))
+  val data = df.where("rating != 3").withColumn("label", isGood('rating)).withColumn("cleansed", filterWords('review)).where("cleansed != ''")
+  data.select("name", "cleansed", "label").show(10)
 
   val classifier = new LogisticRegression()
 
-  val tokenizer = new Tokenizer().
-    setInputCol("review").
-    setOutputCol("words")
-  val cvm = new CountVectorizerModel(keywords).
-    setInputCol("words").
-    setOutputCol("features")
+  val tokenizer = new Tokenizer().setInputCol("cleansed").setOutputCol("words")
+  val cvm = new CountVectorizerModel(keywords).setInputCol("words").setOutputCol("features")
 
-  val Array(training, test) = cvm.transform(
-    tokenizer.transform(data)).
-    randomSplit(Array(0.8, 0.2), 1)
+  val Array(training, test) = cvm.transform(tokenizer.transform(data)).randomSplit(Array(0.8, 0.2), 1)
 
-  //val model = classifier.fit(training)
-  //model.evaluate(test).predictions.select("words", "label", "prediction", "probability").show(10)
-  training.take(10).foreach { r =>
-    println(r(1))
-    println(r(4))
-    println(r(5))
-  }
+  val model = classifier.fit(training)
+  model.evaluate(test).predictions.select("words", "label", "prediction", "probability").show(10)
 
 
 }
