@@ -37,15 +37,12 @@ object ClassificationPrimer extends App {
   )
   val isGood = udf((x: Int) => if (x >= 4) 1 else 0)
 
-  val data = df.where("rating != 3").withColumn("label", isGood('rating)).
-    withColumn("cleansed", filterWords('review)).
-    where("cleansed != ''")
-  data.select("name", "cleansed", "label").show(10)
+  val data = df.where("rating != 3").where("review != ''").withColumn("label", isGood('rating))
 
   val classifier = new LogisticRegression()
 
   val tokenizer = new Tokenizer().
-    setInputCol("cleansed").
+    setInputCol("review").
     setOutputCol("words")
   val cvm = new CountVectorizerModel(keywords).
     setInputCol("words").
@@ -55,8 +52,13 @@ object ClassificationPrimer extends App {
     tokenizer.transform(data)).
     randomSplit(Array(0.8, 0.2), 1)
 
-  val model = classifier.fit(training)
-  model.evaluate(test).predictions.select("words", "label", "prediction", "probability").show(10)
+  //val model = classifier.fit(training)
+  //model.evaluate(test).predictions.select("words", "label", "prediction", "probability").show(10)
+  training.take(10).foreach { r =>
+    println(r(1))
+    println(r(4))
+    println(r(5))
+  }
 
 
 }
