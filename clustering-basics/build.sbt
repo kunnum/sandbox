@@ -1,4 +1,4 @@
-name := "regression-basics"
+name := "clustering-basics"
 
 version := "1.0"
 
