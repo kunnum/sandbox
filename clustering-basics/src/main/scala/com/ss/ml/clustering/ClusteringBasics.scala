@@ -1,14 +1,18 @@
 package com.ss.ml.clustering
 
+import java.util.Date
+
+import org.apache.spark.ml.clustering.KMeans
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.ml.feature.{IDF, Tokenizer, HashingTF}
 import org.apache.spark.ml.linalg.Vector
 
 object ClusteringBasics extends App {
 
-  val spark = SparkSession.builder().appName("Clustering Basics").master("local").getOrCreate()
-
+  val spark = SparkSession.builder().appName("Clustering Basics").master("local[4]").getOrCreate()
   val df = spark.read.option("header", "false").csv("data")
+
+  import spark.implicits._
 
   val tk = new Tokenizer().setInputCol("_c2").setOutputCol("words")
   val tf = new HashingTF().setInputCol("words").setOutputCol("tf")
@@ -26,7 +30,7 @@ object ClusteringBasics extends App {
   val clintonTfIdf = getTfIdf("<http://dbpedia.org/resource/Bill_Clinton>", idfs)
   val beckhamfIdf = getTfIdf("<http://dbpedia.org/resource/David_Beckham>", idfs)
 
-  def dorProduct(v1: Vector, v2: Vector) = {
+  def dotProduct(v1: Vector, v2: Vector) = {
     var dp = 0.0
     var index = v1.size - 1
     for (i <- 0 to index) {
@@ -35,7 +39,21 @@ object ClusteringBasics extends App {
     dp
   }
 
-  println("Similarity metric between Obama and Clinton is " + dorProduct(obamaTfIdf, clintonTfIdf))
-  println("Similarity metric between Obama and Beckam is " + dorProduct(obamaTfIdf, beckhamfIdf))
+  def nearestNeighbour() = {
+    val x = idfs.map(r => (r.getString(1), dotProduct(obamaTfIdf, r.getAs[Vector]("tf-idf"))))
+    import org.apache.spark.sql.functions._
+    x.sort(desc("_2")).show(10)
+  }
+
+  def similarity() = {
+    println("Similarity metric between Obama and Clinton is " + dotProduct(obamaTfIdf, clintonTfIdf))
+    println("Similarity metric between Obama and Beckham is " + dotProduct(obamaTfIdf, beckhamfIdf))
+  }
+
+  def cluster() = {
+    val Array(training, test) = idfs.randomSplit(Array(0.8, 0.2), 1)
+    val model = new KMeans().setFeaturesCol("tf-idf").setK(5).setSeed(1).fit(training)
+    model.transform(test).show(10)
+  }
 
 }
