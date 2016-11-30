@@ -9,7 +9,7 @@ import org.apache.spark.sql.{Row, DataFrame, SparkSession}
 /**
  * Created by meeraj on 26/11/16.
  */
-object LRWithGradientDescent extends App {
+object LRWithGradientAscent extends App {
 
   val spark = SparkSession.builder().appName("Logistic Regression").master("local[4]").getOrCreate()
   import spark.implicits._
