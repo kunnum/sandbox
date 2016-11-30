@@ -2,7 +2,7 @@ package com.ss.ml.classification.lr
 
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.feature.{CountVectorizerModel, Tokenizer}
-import org.apache.spark.ml.linalg.SparseVector
+import org.apache.spark.ml.linalg.{Vectors, SparseVector}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{Row, DataFrame, SparkSession}
 
@@ -40,6 +40,13 @@ object LRWithGradientAscent extends App {
   val cfs = logisticRegression(withFeatures, List.fill(words.length + 1)(0.0), 1e-7, 301)
 
   println(cfs)
+
+  // (193,[2],[1.0])
+
+  /*val sv: SparseVector = Vectors.sparse(193, List((2, 1.0))).asInstanceOf[SparseVector]
+  val index = sv.indices.indexOf(3)
+  println(sv)
+  println(index)*/
 
   /*
    * Compute the scores for a given set of coefficients.
@@ -93,10 +100,8 @@ object LRWithGradientAscent extends App {
         if (idx == 0) {
           e
         } else {
-          sv.indices.find(_ == idx) match {
-            case Some(i) => sv.values(i - 1) * e
-            case None => 0
-          }
+          val index = sv.indices.indexOf(idx - 1)
+          if (index >= 0) sv.values(index) * e else 0
         }
       }
     )
@@ -122,15 +127,18 @@ object LRWithGradientAscent extends App {
   def logisticRegression(df: DataFrame, cfs: List[Double], stepSize: Double, iters: Int) = {
     var ret = cfs
     for (i <- 0 to iters) {
+      println(s"Starting itration $i")
       val withScore = computeScores(df, ret)
       val withProbability = computeProbabilities(withScore)
       val withError = computeErrors(withProbability)
       for (j <- 0 to ret.length) {
         val der = computeFeatureDerivative(withError, j)
-        ret = ret.updated(j, ret(j) + stepSize * der)
+        val cf = ret(j) + stepSize * der
+        ret = ret.updated(j, cf)
+        println(s"Updated coefficient $j on iteration $i is $cf")
       }
       val lp = computeLogLikelihood(withError)
-      if (i % 100 == 0) println(s"Log likelihood on $i iteration is $lp")
+      println(s"Ending itration $i, LLP is $lp amd coefficients are $ret")
     }
     ret
   }
