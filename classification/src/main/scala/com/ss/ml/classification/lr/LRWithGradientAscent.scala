@@ -38,10 +38,12 @@ object LRWithGradientAscent extends App {
   val pl = new Pipeline().setStages(Array(tok, cvm))
   val withFeatures = pl.setStages(Array(tok, cvm)).fit(df).transform(df).cache()
 
+  val stepSize = 1e-7
+  val iterations = 10
+  val initialCfs = List.fill(words.length + 1)(0.0)
 
-  val cfs = logisticRegression(withFeatures, List.fill(words.length + 1)(0.0), 1e-7, 301)
-
-  println(cfs)
+  val cfs = logisticRegression(withFeatures, initialCfs, stepSize, iterations)
+  words.zip(cfs.tail).sortBy(_._2)foreach(println)
 
   /*
    * Compute the scores for a given set of coefficients.
