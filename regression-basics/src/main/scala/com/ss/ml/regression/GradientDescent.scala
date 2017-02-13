@@ -26,7 +26,7 @@ object GradientDescent extends App {
     case 0 => (t1, t2)
     case _ =>
       val x = t1 - df.map(pdTheta0(t1, t2)).reduce(_ + _) * alpha / size
-      val y = t1 - df.map(pdTheta1(t1, t2)).reduce(_ + _) * alpha / size
+      val y = t2 - df.map(pdTheta1(t1, t2)).reduce(_ + _) * alpha / size
       val c = cost(x, y)
       if (it % 50 == 0) println(s"Intercept: $x, Gradient: $y, Iteration: $it, Cost: $c")
       gradientDescent(x, y, it - 1)
