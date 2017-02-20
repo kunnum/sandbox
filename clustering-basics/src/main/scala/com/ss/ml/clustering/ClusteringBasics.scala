@@ -1,16 +1,15 @@
 package com.ss.ml.clustering
 
-import java.util.Date
-
 import org.apache.spark.ml.clustering.KMeans
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.ml.feature.{IDF, Tokenizer, HashingTF}
 import org.apache.spark.ml.linalg.Vector
+import org.apache.spark.sql.functions._
 
 object ClusteringBasics extends App {
 
   val spark = SparkSession.builder().appName("Clustering Basics").master("local[4]").getOrCreate()
-  val df = spark.read.option("header", "false").csv("data")
+  val df = spark.read.option("header", "true").csv("people.csv")
 
   import spark.implicits._
 
@@ -21,14 +20,10 @@ object ClusteringBasics extends App {
   val terms = tf.transform(tk.transform(df))
   val idfs = idf.fit(terms).transform(terms)
 
-  def getTfIdf(uri: String, ds: DataFrame) = {
-    val r = ds.filter(s"_c0 = '$uri'").take(1)
+  def getTfIdf(name: String, ds: DataFrame) = {
+    val r = ds.filter(s"_c1 = '$name'").take(1)
     r(0).getAs[Vector]("tf-idf")
   }
-
-  val obamaTfIdf = getTfIdf("<http://dbpedia.org/resource/Barack_Obama>", idfs)
-  val clintonTfIdf = getTfIdf("<http://dbpedia.org/resource/Bill_Clinton>", idfs)
-  val beckhamfIdf = getTfIdf("<http://dbpedia.org/resource/David_Beckham>", idfs)
 
   def dotProduct(v1: Vector, v2: Vector) = {
     var dp = 0.0
@@ -39,21 +34,31 @@ object ClusteringBasics extends App {
     dp
   }
 
-  def nearestNeighbour() = {
-    val x = idfs.map(r => (r.getString(1), dotProduct(obamaTfIdf, r.getAs[Vector]("tf-idf"))))
-    import org.apache.spark.sql.functions._
-    x.sort(desc("_2")).show(10)
+  def cluster(idfs: DataFrame, k: Int) = {
+    val model = new KMeans().setFeaturesCol("tf-idf").setK(k).setSeed(1).fit(idfs)
+    model.transform(idfs).sort("prediction").select("_c1", "prediction").show(10, false)
   }
 
-  def similarity() = {
-    println("Similarity metric between Obama and Clinton is " + dotProduct(obamaTfIdf, clintonTfIdf))
-    println("Similarity metric between Obama and Beckham is " + dotProduct(obamaTfIdf, beckhamfIdf))
+  cluster(idfs, 3)
+
+  def similarity(source: String, target: String, idfs: DataFrame) = {
+    val sourceTfIdf = getTfIdf(source, idfs)
+    val targetfIdf = getTfIdf(target, idfs)
+    val dp = dotProduct(sourceTfIdf, targetfIdf)
+    println(s"Similarity metric between $source and $target is $dp")
   }
 
-  def cluster() = {
-    val Array(training, test) = idfs.randomSplit(Array(0.8, 0.2), 1)
-    val model = new KMeans().setFeaturesCol("tf-idf").setK(5).setSeed(1).fit(training)
-    model.transform(test).show(10)
+  similarity("Barack Obama", "Joe Biden", idfs)
+  similarity("Barack Obama", "David Beckham", idfs)
+  similarity("Barack Obama", "Tony Blair", idfs)
+
+  def nearestNeighbour(idfs: DataFrame, name: String) = {
+    val sourceTfIdf = getTfIdf(name, idfs)
+    val x = idfs.map(r => (r.getString(1), dotProduct(sourceTfIdf, r.getAs[Vector]("tf-idf"))))
+    val neighbour = x.sort(desc("_2")).select("_1").take(2)(1).getAs[String](0)
+    println(s"Nearest neighbour for $name is $neighbour")
   }
+
+  nearestNeighbour(idfs, "Barack Obama")
 
 }
