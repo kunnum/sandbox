@@ -1,0 +1,93 @@
+{
+  "paragraphs": [
+    {
+      "text": "val sum  \u003d List.range(1, 100).filter(_ % 2 \u003d\u003d 0).map(x \u003d\u003e x * x).reduce(_ + _)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 19, 2017 9:51:35 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "lineNumbers": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nsum: Int \u003d 161700\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487483334467_43122287",
+      "id": "20170219-094854_1789048006",
+      "dateCreated": "Feb 19, 2017 9:48:54 AM",
+      "dateStarted": "Feb 19, 2017 9:50:59 AM",
+      "dateFinished": "Feb 19, 2017 9:51:02 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487483505989_-417008393",
+      "id": "20170219-095145_286496460",
+      "dateCreated": "Feb 19, 2017 9:51:45 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487483396692_-1000023926",
+      "id": "20170219-094956_1964102898",
+      "dateCreated": "Feb 19, 2017 9:49:56 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "~Trash/Users/meeraj/Projects/dubai-data-science/scala",
+  "id": "2CA84CDTP",
+  "angularObjects": {
+    "2C9N29A4D:shared_process": [],
+    "2CADRTPFD:shared_process": [],
+    "2CAXEAWF8:shared_process": [],
+    "2CBJ8WFZJ:shared_process": [],
+    "2C9ZFQREF:shared_process": [],
+    "2CCASCT5D:shared_process": [],
+    "2CB5HZVQP:shared_process": [],
+    "2CAQVA5EW:shared_process": [],
+    "2C9Y5KYWU:shared_process": [],
+    "2CAD1Q8XM:shared_process": [],
+    "2CA6SKJ8G:shared_process": [],
+    "2CBK4SF7K:shared_process": [],
+    "2C98FTCSH:shared_process": [],
+    "2CA4ZK2SB:shared_process": [],
+    "2C9TQT5S3:shared_process": [],
+    "2C8Y3VX37:shared_process": [],
+    "2C9QPQZTR:shared_process": [],
+    "2C8KW2WY5:shared_process": [],
+    "2CABNR9Q6:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

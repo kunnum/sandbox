@@ -1,0 +1,638 @@
+{
+  "paragraphs": [
+    {
+      "title": "Import the necessary classes",
+      "text": "import org.apache.spark.ml.clustering.KMeans\nimport org.apache.spark.sql.{DataFrame, SparkSession}\nimport org.apache.spark.ml.feature.{IDF, Tokenizer, HashingTF}\nimport org.apache.spark.ml.linalg.Vector\nimport org.apache.spark.sql.functions._",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:45:08 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nimport org.apache.spark.ml.clustering.KMeans\n\nimport org.apache.spark.sql.{DataFrame, SparkSession}\n\nimport org.apache.spark.ml.feature.{IDF, Tokenizer, HashingTF}\n\nimport org.apache.spark.ml.linalg.Vector\n\nimport org.apache.spark.sql.functions._\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487500219568_576557909",
+      "id": "20170219-143019_2044300607",
+      "dateCreated": "Feb 19, 2017 2:30:19 PM",
+      "dateStarted": "Feb 20, 2017 11:45:09 AM",
+      "dateFinished": "Feb 20, 2017 11:45:39 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Read the data",
+      "text": "val df \u003d spark.read.option(\"header\", \"true\").csv(\"/Users/meeraj/dss-data/people.csv\")\nimport spark.implicits._",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:50:47 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ndf: org.apache.spark.sql.DataFrame \u003d [_c0: string, _c1: string ... 1 more field]\n\nimport spark.implicits._\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487500431619_1647838409",
+      "id": "20170219-143351_404175089",
+      "dateCreated": "Feb 19, 2017 2:33:51 PM",
+      "dateStarted": "Feb 20, 2017 11:50:47 AM",
+      "dateFinished": "Feb 20, 2017 11:50:50 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Preview the data",
+      "text": "df.show",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:56:09 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+--------------------+-------------+--------------------+\n|                 _c0|          _c1|                 _c2|\n+--------------------+-------------+--------------------+\n|\u003chttp://dbpedia.o...| Gordon Brown|james gordon brow...|\n|\u003chttp://dbpedia.o...|   Tony Blair|anthony charles l...|\n|\u003chttp://dbpedia.o...| Barack Obama|barack hussein ob...|\n|\u003chttp://dbpedia.o...|David Beckham|david robert jose...|\n|\u003chttp://dbpedia.o...|    Joe Biden|joseph robinette ...|\n|\u003chttp://dbpedia.o...| Alan Shearer|alan shearer obe ...|\n+--------------------+-------------+--------------------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487577338126_-341120154",
+      "id": "20170220-115538_1668788081",
+      "dateCreated": "Feb 20, 2017 11:55:38 AM",
+      "dateStarted": "Feb 20, 2017 11:56:09 AM",
+      "dateFinished": "Feb 20, 2017 11:56:10 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Tokenizer to create words",
+      "text": "val tk \u003d new Tokenizer().setInputCol(\"_c2\").setOutputCol(\"words\")",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:50:52 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ntk: org.apache.spark.ml.feature.Tokenizer \u003d tok_c2a6f45b992c\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487500541444_-2117597264",
+      "id": "20170219-143541_165367670",
+      "dateCreated": "Feb 19, 2017 2:35:41 PM",
+      "dateStarted": "Feb 20, 2017 11:50:52 AM",
+      "dateFinished": "Feb 20, 2017 11:50:53 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Term frequency using hashing",
+      "text": "val tf \u003d new HashingTF().setInputCol(\"words\").setOutputCol(\"tf\")",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:50:55 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ntf: org.apache.spark.ml.feature.HashingTF \u003d hashingTF_ca51a9baf374\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487500577043_1609742811",
+      "id": "20170219-143617_725855173",
+      "dateCreated": "Feb 19, 2017 2:36:17 PM",
+      "dateStarted": "Feb 20, 2017 11:50:55 AM",
+      "dateFinished": "Feb 20, 2017 11:50:55 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create transformer for IDF",
+      "text": "val idf \u003d new IDF().setInputCol(\"tf\").setOutputCol(\"tf-idf\")",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:50:57 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nidf: org.apache.spark.ml.feature.IDF \u003d idf_76af229cc39e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487500602244_588265130",
+      "id": "20170219-143642_1671172220",
+      "dateCreated": "Feb 19, 2017 2:36:42 PM",
+      "dateStarted": "Feb 20, 2017 11:50:57 AM",
+      "dateFinished": "Feb 20, 2017 11:50:58 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create the TF vector",
+      "text": "val terms \u003d tf.transform(tk.transform(df))",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:51:01 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nterms: org.apache.spark.sql.DataFrame \u003d [_c0: string, _c1: string ... 3 more fields]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487500635380_-570351726",
+      "id": "20170219-143715_1232508677",
+      "dateCreated": "Feb 19, 2017 2:37:15 PM",
+      "dateStarted": "Feb 20, 2017 11:51:02 AM",
+      "dateFinished": "Feb 20, 2017 11:51:02 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Build the IDF vector",
+      "text": "val idfs \u003d idf.fit(terms).transform(terms)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:51:05 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nidfs: org.apache.spark.sql.DataFrame \u003d [_c0: string, _c1: string ... 4 more fields]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487500669506_651272004",
+      "id": "20170219-143749_1883237201",
+      "dateCreated": "Feb 19, 2017 2:37:49 PM",
+      "dateStarted": "Feb 20, 2017 11:51:05 AM",
+      "dateFinished": "Feb 20, 2017 11:51:06 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Utility function to get the IDF for a name",
+      "text": "def getTfIdf(name: String, ds: DataFrame) \u003d {\n  val r \u003d ds.filter(s\"_c1 \u003d \u0027$name\u0027\").take(1)\n  r(0).getAs[Vector](\"tf-idf\")\n}",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:51:08 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ngetTfIdf: (name: String, ds: org.apache.spark.sql.DataFrame)org.apache.spark.ml.linalg.Vector\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487500710809_1136317774",
+      "id": "20170219-143830_832791334",
+      "dateCreated": "Feb 19, 2017 2:38:30 PM",
+      "dateStarted": "Feb 20, 2017 11:51:09 AM",
+      "dateFinished": "Feb 20, 2017 11:51:09 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Dot product to compute the distance",
+      "text": "def dotProduct(v1: Vector, v2: Vector) \u003d {\n  var dp \u003d 0.0\n  var index \u003d v1.size - 1\n  for (i \u003c- 0 to index) {\n    dp +\u003d v1(i) * v2(i)\n  }\n  dp\n}",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:51:13 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ndotProduct: (v1: org.apache.spark.ml.linalg.Vector, v2: org.apache.spark.ml.linalg.Vector)Double\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487500747664_18835113",
+      "id": "20170219-143907_897745858",
+      "dateCreated": "Feb 19, 2017 2:39:07 PM",
+      "dateStarted": "Feb 20, 2017 11:51:13 AM",
+      "dateFinished": "Feb 20, 2017 11:51:14 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Function to run k-means cluster",
+      "text": "def cluster(idfs: DataFrame, k: Int) \u003d {\n  val model \u003d new KMeans().setFeaturesCol(\"tf-idf\").setK(k).setSeed(1).fit(idfs)\n  model.transform(idfs).sort(\"prediction\").select(\"_c1\", \"prediction\").show(10, false)\n}",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:51:19 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ncluster: (idfs: org.apache.spark.sql.DataFrame, k: Int)Unit\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487500867859_244652069",
+      "id": "20170219-144107_1998143940",
+      "dateCreated": "Feb 19, 2017 2:41:07 PM",
+      "dateStarted": "Feb 20, 2017 11:51:19 AM",
+      "dateFinished": "Feb 20, 2017 11:51:20 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Run k-means with 3 clusters",
+      "text": "cluster(idfs, 3)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:51:25 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+-------------+----------+\n|_c1          |prediction|\n+-------------+----------+\n|Joe Biden    |0         |\n|Barack Obama |0         |\n|Gordon Brown |1         |\n|Tony Blair   |1         |\n|David Beckham|2         |\n|Alan Shearer |2         |\n+-------------+----------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487500923416_1754699557",
+      "id": "20170219-144203_1537113431",
+      "dateCreated": "Feb 19, 2017 2:42:03 PM",
+      "dateStarted": "Feb 20, 2017 11:51:25 AM",
+      "dateFinished": "Feb 20, 2017 11:51:29 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Utility method to compute similarity",
+      "text": "def similarity(source: String, target: String, idfs: DataFrame) \u003d {\n  val sourceTfIdf \u003d getTfIdf(source, idfs)\n  val targetfIdf \u003d getTfIdf(target, idfs)\n  val dp \u003d dotProduct(sourceTfIdf, targetfIdf)\n  println(s\"Similarity metric between $source and $target is $dp\")\n}",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:52:13 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nsimilarity: (source: String, target: String, idfs: org.apache.spark.sql.DataFrame)Unit\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487501010124_1907550495",
+      "id": "20170219-144330_555616916",
+      "dateCreated": "Feb 19, 2017 2:43:30 PM",
+      "dateStarted": "Feb 20, 2017 11:52:13 AM",
+      "dateFinished": "Feb 20, 2017 11:52:13 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Compute similarity",
+      "text": "similarity(\"Barack Obama\", \"Joe Biden\", idfs)\nsimilarity(\"Barack Obama\", \"David Beckham\", idfs)\nsimilarity(\"Barack Obama\", \"Tony Blair\", idfs)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:52:55 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Similarity metric between Barack Obama and Joe Biden is 123.41749115607861\nSimilarity metric between Barack Obama and David Beckham is 14.857697946770523\nSimilarity metric between Barack Obama and Tony Blair is 36.459349151753194\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487530977808_523189721",
+      "id": "20170219-230257_1657490710",
+      "dateCreated": "Feb 19, 2017 11:02:57 PM",
+      "dateStarted": "Feb 20, 2017 11:52:55 AM",
+      "dateFinished": "Feb 20, 2017 11:53:01 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Brute force nearest neighbour search",
+      "text": "def nearestNeighbour(idfs: DataFrame, name: String) \u003d {\n  val sourceTfIdf \u003d getTfIdf(name, idfs)\n  val x \u003d idfs.map(r \u003d\u003e (r.getString(1), dotProduct(sourceTfIdf, r.getAs[Vector](\"tf-idf\"))))\n  val neighbour \u003d x.sort(desc(\"_2\")).select(\"_1\").take(2)(1).getAs[String](0)\n  println(s\"Nearest neighbour for $name is $neighbour\")\n}",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:53:54 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nnearestNeighbour: (idfs: org.apache.spark.sql.DataFrame, name: String)Unit\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487532531001_-1588693703",
+      "id": "20170219-232851_1839492120",
+      "dateCreated": "Feb 19, 2017 11:28:51 PM",
+      "dateStarted": "Feb 20, 2017 11:53:54 AM",
+      "dateFinished": "Feb 20, 2017 11:53:57 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Nearest neighbour for Barack Obama",
+      "text": "nearestNeighbour(idfs, \"Barack Obama\")",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 11:54:56 AM",
+      "config": {
+        "colWidth": 8.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Nearest neighbour for Barack Obama is Joe Biden\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487534159403_1460000742",
+      "id": "20170219-235559_1881624396",
+      "dateCreated": "Feb 19, 2017 11:55:59 PM",
+      "dateStarted": "Feb 20, 2017 11:54:30 AM",
+      "dateFinished": "Feb 20, 2017 11:54:32 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487577270259_-2074657491",
+      "id": "20170220-115430_1267895912",
+      "dateCreated": "Feb 20, 2017 11:54:30 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Clustering",
+  "id": "2CBEH6BZV",
+  "angularObjects": {
+    "2C9N29A4D:shared_process": [],
+    "2CADRTPFD:shared_process": [],
+    "2CAXEAWF8:shared_process": [],
+    "2CBJ8WFZJ:shared_process": [],
+    "2C9ZFQREF:shared_process": [],
+    "2CCASCT5D:shared_process": [],
+    "2CB5HZVQP:shared_process": [],
+    "2CAQVA5EW:shared_process": [],
+    "2C9Y5KYWU:shared_process": [],
+    "2CAD1Q8XM:shared_process": [],
+    "2CA6SKJ8G:shared_process": [],
+    "2CBK4SF7K:shared_process": [],
+    "2C98FTCSH:shared_process": [],
+    "2CA4ZK2SB:shared_process": [],
+    "2C9TQT5S3:shared_process": [],
+    "2C8Y3VX37:shared_process": [],
+    "2C9QPQZTR:shared_process": [],
+    "2C8KW2WY5:shared_process": [],
+    "2CABNR9Q6:shared_process": []
+  },
+  "config": {
+    "looknfeel": "default",
+    "personalizedMode": "false"
+  },
+  "info": {}
+}

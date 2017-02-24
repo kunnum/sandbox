@@ -1,0 +1,191 @@
+{
+  "paragraphs": [
+    {
+      "title": "Tokenizer",
+      "text": "import org.apache.spark.ml.feature.{RegexTokenizer, Tokenizer}\nimport org.apache.spark.sql.functions._\n\nval sentences \u003d spark.createDataFrame(Seq(\n  (0, \"Hi I heard about Spark\"),\n  (1, \"I wish Java could use case classes\"),\n  (2, \"Logistic,regression,models,are,neat\")\n)).toDF(\"id\", \"sentence\")\n\nval tokenizer \u003d new Tokenizer().setInputCol(\"sentence\").setOutputCol(\"words\")\ntokenizer.transform(sentences).show(false)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 11:27:41 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nimport org.apache.spark.ml.feature.{RegexTokenizer, Tokenizer}\n\nimport org.apache.spark.sql.functions._\n\nsentences: org.apache.spark.sql.DataFrame \u003d [id: int, sentence: string]\n\ntokenizer: org.apache.spark.ml.feature.Tokenizer \u003d tok_fa53c937f2d0\n+---+-----------------------------------+------------------------------------------+\n|id |sentence                           |words                                     |\n+---+-----------------------------------+------------------------------------------+\n|0  |Hi I heard about Spark             |[hi, i, heard, about, spark]              |\n|1  |I wish Java could use case classes |[i, wish, java, could, use, case, classes]|\n|2  |Logistic,regression,models,are,neat|[logistic,regression,models,are,neat]     |\n+---+-----------------------------------+------------------------------------------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487748434700_-818384738",
+      "id": "20170222-112714_126041411",
+      "dateCreated": "Feb 22, 2017 11:27:14 AM",
+      "dateStarted": "Feb 22, 2017 11:27:22 PM",
+      "dateFinished": "Feb 22, 2017 11:27:24 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Count Vectorizer",
+      "text": "import org.apache.spark.ml.feature.CountVectorizerModel\n\nval df \u003d spark.createDataFrame(Seq(\n  (0, Array(\"a\", \"b\", \"c\")),\n  (1, Array(\"a\", \"b\", \"b\", \"c\", \"a\"))\n)).toDF(\"id\", \"words\")\n\n\n// alternatively, define CountVectorizerModel with a-priori vocabulary\nval cvm \u003d new CountVectorizerModel(Array(\"a\", \"b\", \"c\"))\n  .setInputCol(\"words\")\n  .setOutputCol(\"features\")\n\ncvm.transform(df).show(false)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 11:31:30 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nimport org.apache.spark.ml.feature.CountVectorizerModel\n\ndf: org.apache.spark.sql.DataFrame \u003d [id: int, words: array\u003cstring\u003e]\n\ncvm: org.apache.spark.ml.feature.CountVectorizerModel \u003d cntVecModel_271e93d5f24f\n+---+---------------+-------------------------+\n|id |words          |features                 |\n+---+---------------+-------------------------+\n|0  |[a, b, c]      |(3,[0,1,2],[1.0,1.0,1.0])|\n|1  |[a, b, b, c, a]|(3,[0,1,2],[2.0,2.0,1.0])|\n+---+---------------+-------------------------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487791642741_471823794",
+      "id": "20170222-232722_597248878",
+      "dateCreated": "Feb 22, 2017 11:27:22 PM",
+      "dateStarted": "Feb 22, 2017 11:31:13 PM",
+      "dateFinished": "Feb 22, 2017 11:31:15 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Stop Words Remover",
+      "text": "import org.apache.spark.ml.feature.StopWordsRemover\n\nval remover \u003d new StopWordsRemover()\n  .setInputCol(\"raw\")\n  .setOutputCol(\"filtered\")\n\nval dataSet \u003d spark.createDataFrame(Seq(\n  (0, Seq(\"I\", \"saw\", \"the\", \"red\", \"balloon\")),\n  (1, Seq(\"Mary\", \"had\", \"a\", \"little\", \"lamb\"))\n)).toDF(\"id\", \"raw\")\n\nremover.transform(dataSet).show(false)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 11:34:31 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nimport org.apache.spark.ml.feature.StopWordsRemover\n\nremover: org.apache.spark.ml.feature.StopWordsRemover \u003d stopWords_b9ad2c17159d\n\ndataSet: org.apache.spark.sql.DataFrame \u003d [id: int, raw: array\u003cstring\u003e]\n+---+----------------------------+--------------------+\n|id |raw                         |filtered            |\n+---+----------------------------+--------------------+\n|0  |[I, saw, the, red, balloon] |[saw, red, balloon] |\n|1  |[Mary, had, a, little, lamb]|[Mary, little, lamb]|\n+---+----------------------------+--------------------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487791873763_1868399360",
+      "id": "20170222-233113_49448396",
+      "dateCreated": "Feb 22, 2017 11:31:13 PM",
+      "dateStarted": "Feb 22, 2017 11:34:15 PM",
+      "dateFinished": "Feb 22, 2017 11:34:16 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Binarizer",
+      "text": "import org.apache.spark.ml.feature.Binarizer\n\nval dataFrame \u003d spark.createDataFrame(Array((0, 2.0), (1, 3.2), (2, 4.1))).toDF(\"id\", \"rating\")\nval binarizer \u003d new Binarizer().setInputCol(\"rating\").setOutputCol(\"is_good\").setThreshold(2.0)\n\nbinarizer.transform(dataFrame).show(false)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 11:40:30 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nimport org.apache.spark.ml.feature.Binarizer\n\ndataFrame: org.apache.spark.sql.DataFrame \u003d [id: int, rating: double]\n\nbinarizer: org.apache.spark.ml.feature.Binarizer \u003d binarizer_f8416a47142c\n+---+------+-------+\n|id |rating|is_good|\n+---+------+-------+\n|0  |2.0   |0.0    |\n|1  |3.2   |1.0    |\n|2  |4.1   |1.0    |\n+---+------+-------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487792055399_705175384",
+      "id": "20170222-233415_132732224",
+      "dateCreated": "Feb 22, 2017 11:34:15 PM",
+      "dateStarted": "Feb 22, 2017 11:40:30 PM",
+      "dateFinished": "Feb 22, 2017 11:40:31 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487792179855_-479665694",
+      "id": "20170222-233619_1879855990",
+      "dateCreated": "Feb 22, 2017 11:36:19 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "ML Components",
+  "id": "2CCC3QFCS",
+  "angularObjects": {
+    "2C9N29A4D:shared_process": [],
+    "2CADRTPFD:shared_process": [],
+    "2CAXEAWF8:shared_process": [],
+    "2CBJ8WFZJ:shared_process": [],
+    "2C9ZFQREF:shared_process": [],
+    "2CCASCT5D:shared_process": [],
+    "2CB5HZVQP:shared_process": [],
+    "2CAQVA5EW:shared_process": [],
+    "2C9Y5KYWU:shared_process": [],
+    "2CAD1Q8XM:shared_process": [],
+    "2CA6SKJ8G:shared_process": [],
+    "2CBK4SF7K:shared_process": [],
+    "2C98FTCSH:shared_process": [],
+    "2CA4ZK2SB:shared_process": [],
+    "2C9TQT5S3:shared_process": [],
+    "2C8Y3VX37:shared_process": [],
+    "2C9QPQZTR:shared_process": [],
+    "2C8KW2WY5:shared_process": [],
+    "2CABNR9Q6:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

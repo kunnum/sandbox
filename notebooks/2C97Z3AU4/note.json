@@ -1,0 +1,450 @@
+{
+  "paragraphs": [
+    {
+      "title": "Import relevant classes",
+      "text": "import org.apache.spark.ml.evaluation.RegressionEvaluator\nimport org.apache.spark.ml.recommendation.ALS",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 1:10:31 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nimport org.apache.spark.ml.evaluation.RegressionEvaluator\n\nimport org.apache.spark.ml.recommendation.ALS\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487581156686_-260423053",
+      "id": "20170220-125916_764964960",
+      "dateCreated": "Feb 20, 2017 12:59:16 PM",
+      "dateStarted": "Feb 20, 2017 1:09:28 PM",
+      "dateFinished": "Feb 20, 2017 1:09:29 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Case class representing ratings",
+      "text": "case class Rating(userId: Int, movieId: Int, rating: Float, timestamp: Long)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 1:10:52 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ndefined class Rating\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487581768136_-1159553349",
+      "id": "20170220-130928_1033019557",
+      "dateCreated": "Feb 20, 2017 1:09:28 PM",
+      "dateStarted": "Feb 20, 2017 1:10:06 PM",
+      "dateFinished": "Feb 20, 2017 1:10:08 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Function to parse rating data",
+      "text": "def parseRating(str: String): Rating \u003d {\n  val fields \u003d str.split(\"::\")\n  Rating(fields(0).toInt, fields(1).toInt, fields(2).toFloat, fields(3).toLong)\n}",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 1:11:49 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nparseRating: (str: String)Rating\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487581806931_-1676393715",
+      "id": "20170220-131006_1127431751",
+      "dateCreated": "Feb 20, 2017 1:10:06 PM",
+      "dateStarted": "Feb 20, 2017 1:11:29 PM",
+      "dateFinished": "Feb 20, 2017 1:11:30 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Read and parse the movie data",
+      "text": "val ratings \u003d spark.read.textFile(\"/Users/meeraj/dss-data/movies.txt\").map(parseRating).toDF()",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 1:14:38 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nratings: org.apache.spark.sql.DataFrame \u003d [userId: int, movieId: int ... 2 more fields]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487581889295_-128225438",
+      "id": "20170220-131129_798100177",
+      "dateCreated": "Feb 20, 2017 1:11:29 PM",
+      "dateStarted": "Feb 20, 2017 1:14:19 PM",
+      "dateFinished": "Feb 20, 2017 1:14:20 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Preview the data",
+      "text": "ratings.show",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 1:16:38 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+------+-------+------+----------+\n|userId|movieId|rating| timestamp|\n+------+-------+------+----------+\n|     0|      2|   3.0|1424380312|\n|     0|      3|   1.0|1424380312|\n|     0|      5|   2.0|1424380312|\n|     0|      9|   4.0|1424380312|\n|     0|     11|   1.0|1424380312|\n|     0|     12|   2.0|1424380312|\n|     0|     15|   1.0|1424380312|\n|     0|     17|   1.0|1424380312|\n|     0|     19|   1.0|1424380312|\n|     0|     21|   1.0|1424380312|\n|     0|     23|   1.0|1424380312|\n|     0|     26|   3.0|1424380312|\n|     0|     27|   1.0|1424380312|\n|     0|     28|   1.0|1424380312|\n|     0|     29|   1.0|1424380312|\n|     0|     30|   1.0|1424380312|\n|     0|     31|   1.0|1424380312|\n|     0|     34|   1.0|1424380312|\n|     0|     37|   1.0|1424380312|\n|     0|     41|   2.0|1424380312|\n+------+-------+------+----------+\nonly showing top 20 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487582000346_2050576935",
+      "id": "20170220-131320_89869322",
+      "dateCreated": "Feb 20, 2017 1:13:20 PM",
+      "dateStarted": "Feb 20, 2017 1:14:49 PM",
+      "dateFinished": "Feb 20, 2017 1:14:50 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Split test and training data",
+      "text": "val Array(training, test) \u003d ratings.randomSplit(Array(0.8, 0.2))",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 1:18:12 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\n\ntraining: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [userId: int, movieId: int ... 2 more fields]\ntest: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [userId: int, movieId: int ... 2 more fields]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487582089763_-178952641",
+      "id": "20170220-131449_1756015387",
+      "dateCreated": "Feb 20, 2017 1:14:49 PM",
+      "dateStarted": "Feb 20, 2017 1:17:50 PM",
+      "dateFinished": "Feb 20, 2017 1:17:51 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create an ALS instance",
+      "text": "val als \u003d new ALS().\n  setMaxIter(5).\n  setRegParam(0.01).\n  setUserCol(\"userId\").\n  setItemCol(\"movieId\").\n  setRatingCol(\"rating\")",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 10:06:14 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nals: org.apache.spark.ml.recommendation.ALS \u003d als_deadddc8d288\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487582270004_-263356025",
+      "id": "20170220-131750_888455353",
+      "dateCreated": "Feb 20, 2017 1:17:50 PM",
+      "dateStarted": "Feb 20, 2017 1:18:58 PM",
+      "dateFinished": "Feb 20, 2017 1:18:58 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Fit the training data",
+      "text": "val model \u003d als.fit(training)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 1:28:30 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nmodel: org.apache.spark.ml.recommendation.ALSModel \u003d als_deadddc8d288\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487582338042_92060014",
+      "id": "20170220-131858_1983729302",
+      "dateCreated": "Feb 20, 2017 1:18:58 PM",
+      "dateStarted": "Feb 20, 2017 1:28:07 PM",
+      "dateFinished": "Feb 20, 2017 1:28:13 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Make predictions",
+      "text": "val predictions \u003d model.transform(training)\npredictions.show(10, false)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 1:32:19 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\npredictions: org.apache.spark.sql.DataFrame \u003d [userId: int, movieId: int ... 3 more fields]\n+------+-------+------+----------+----------+\n|userId|movieId|rating|timestamp |prediction|\n+------+-------+------+----------+----------+\n|26    |31     |1.0   |1424380312|1.078363  |\n|27    |31     |1.0   |1424380312|1.22962   |\n|12    |31     |4.0   |1424380312|3.7781818 |\n|13    |31     |1.0   |1424380312|1.5695907 |\n|5     |31     |1.0   |1424380312|0.8888938 |\n|19    |31     |1.0   |1424380312|0.81875575|\n|4     |31     |1.0   |1424380312|0.9568869 |\n|7     |31     |3.0   |1424380312|3.0967104 |\n|25    |31     |2.0   |1424380312|1.8247657 |\n|29    |31     |1.0   |1424380312|0.9458159 |\n+------+-------+------+----------+----------+\nonly showing top 10 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487582887115_-919078709",
+      "id": "20170220-132807_1570448133",
+      "dateCreated": "Feb 20, 2017 1:28:07 PM",
+      "dateStarted": "Feb 20, 2017 1:32:19 PM",
+      "dateFinished": "Feb 20, 2017 1:32:24 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create an evaluator",
+      "text": "val evaluator \u003d new RegressionEvaluator().setMetricName(\"rmse\").setLabelCol(\"rating\").setPredictionCol(\"prediction\")",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 1:30:47 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nevaluator: org.apache.spark.ml.evaluation.RegressionEvaluator \u003d regEval_780690b5d83a\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487582980425_1964968398",
+      "id": "20170220-132940_745133288",
+      "dateCreated": "Feb 20, 2017 1:29:40 PM",
+      "dateStarted": "Feb 20, 2017 1:30:47 PM",
+      "dateFinished": "Feb 20, 2017 1:30:48 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Compute the cost function",
+      "text": "evaluator.evaluate(predictions)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2017 1:32:30 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nres11: Double \u003d 0.22378424979514117\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487583047471_830636696",
+      "id": "20170220-133047_597187868",
+      "dateCreated": "Feb 20, 2017 1:30:47 PM",
+      "dateStarted": "Feb 20, 2017 1:32:30 PM",
+      "dateFinished": "Feb 20, 2017 1:32:35 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487583099289_369150910",
+      "id": "20170220-133139_601438210",
+      "dateCreated": "Feb 20, 2017 1:31:39 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Recommender",
+  "id": "2C97Z3AU4",
+  "angularObjects": {
+    "2C9N29A4D:shared_process": [],
+    "2CADRTPFD:shared_process": [],
+    "2CAXEAWF8:shared_process": [],
+    "2CBJ8WFZJ:shared_process": [],
+    "2C9ZFQREF:shared_process": [],
+    "2CCASCT5D:shared_process": [],
+    "2CB5HZVQP:shared_process": [],
+    "2CAQVA5EW:shared_process": [],
+    "2C9Y5KYWU:shared_process": [],
+    "2CAD1Q8XM:shared_process": [],
+    "2CA6SKJ8G:shared_process": [],
+    "2CBK4SF7K:shared_process": [],
+    "2C98FTCSH:shared_process": [],
+    "2CA4ZK2SB:shared_process": [],
+    "2C9TQT5S3:shared_process": [],
+    "2C8Y3VX37:shared_process": [],
+    "2C9QPQZTR:shared_process": [],
+    "2C8KW2WY5:shared_process": [],
+    "2CABNR9Q6:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

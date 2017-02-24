@@ -1,0 +1,376 @@
+{
+  "paragraphs": [
+    {
+      "title": "Create the training data",
+      "text": "val training \u003d spark.createDataFrame(\n    Seq(\n        (1, \"The food was excellent though the service was poor\", 1),\n        (2, \"The food was awful\", 0),\n        (3, \"The staff were brilliant\", 1))).toDF(\"id\", \"review\", \"label\")",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 8:55:25 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ntraining: org.apache.spark.sql.DataFrame \u003d [id: int, review: string ... 1 more field]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487648705987_386512685",
+      "id": "20170221-074505_451157443",
+      "dateCreated": "Feb 21, 2017 7:45:05 AM",
+      "dateStarted": "Feb 21, 2017 8:53:42 AM",
+      "dateFinished": "Feb 21, 2017 8:53:42 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Preview the data",
+      "text": "training.show(false)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 8:55:42 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+---+--------------------------------------------------+-----+\n|id |review                                            |label|\n+---+--------------------------------------------------+-----+\n|1  |The food was excellent though the service was poor|1    |\n|2  |The food was awful                                |0    |\n|3  |The staff were brilliant                          |1    |\n+---+--------------------------------------------------+-----+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487649943645_-1530548233",
+      "id": "20170221-080543_1212447204",
+      "dateCreated": "Feb 21, 2017 8:05:43 AM",
+      "dateStarted": "Feb 21, 2017 8:53:45 AM",
+      "dateFinished": "Feb 21, 2017 8:53:45 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create a tokenizer and transform",
+      "text": "import org.apache.spark.ml.feature.{RegexTokenizer, Tokenizer}\nval tok \u003d new Tokenizer().setInputCol(\"review\").setOutputCol(\"words\")\ntok.transform(training).select(\"words\").show(false)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 8:59:12 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nimport org.apache.spark.ml.feature.{RegexTokenizer, Tokenizer}\n\ntok: org.apache.spark.ml.feature.Tokenizer \u003d tok_91e0125f037c\n+------------------------------------------------------------+\n|words                                                       |\n+------------------------------------------------------------+\n|[the, food, was, excellent, though, the, service, was, poor]|\n|[the, food, was, awful]                                     |\n|[the, staff, were, brilliant]                               |\n+------------------------------------------------------------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487650257495_-1559159213",
+      "id": "20170221-081057_314585768",
+      "dateCreated": "Feb 21, 2017 8:10:57 AM",
+      "dateStarted": "Feb 21, 2017 8:59:12 AM",
+      "dateFinished": "Feb 21, 2017 8:59:13 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create a count vectorizer and transform",
+      "text": "import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}\nval keywords \u003d Array(\"excellent\", \"poor\", \"awful\", \"brilliant\")\nval cvm \u003d new CountVectorizerModel(keywords).setInputCol(\"words\").setOutputCol(\"features\")\ncvm.transform(tok.transform(training)).select(\"features\").show(false)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 9:16:58 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nimport org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}\n\nkeywords: Array[String] \u003d Array(excellent, poor, awful, brilliant)\n\ncvm: org.apache.spark.ml.feature.CountVectorizerModel \u003d cntVecModel_0b28c58c8dbc\n+-------------------+\n|features           |\n+-------------------+\n|(4,[0,1],[1.0,1.0])|\n|(4,[2],[1.0])      |\n|(4,[3],[1.0])      |\n+-------------------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487649982312_990219292",
+      "id": "20170221-080622_2036341710",
+      "dateCreated": "Feb 21, 2017 8:06:22 AM",
+      "dateStarted": "Feb 21, 2017 9:16:58 AM",
+      "dateFinished": "Feb 21, 2017 9:17:00 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create a logical regression instance",
+      "text": "import org.apache.spark.ml.classification.LogisticRegression\nval lr \u003d new LogisticRegression()\n",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 8:57:05 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nimport org.apache.spark.ml.classification.LogisticRegression\n\nlr: org.apache.spark.ml.classification.LogisticRegression \u003d logreg_3fac1aa54b15\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487650237657_-1274460351",
+      "id": "20170221-081037_362504692",
+      "dateCreated": "Feb 21, 2017 8:10:37 AM",
+      "dateStarted": "Feb 21, 2017 8:54:00 AM",
+      "dateFinished": "Feb 21, 2017 8:54:00 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create an ML pipeline",
+      "text": "import org.apache.spark.ml.{Pipeline, PipelineModel}\nval pl \u003d new Pipeline().setStages(Array(tok, cvm, lr))",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 8:57:32 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nimport org.apache.spark.ml.{Pipeline, PipelineModel}\n\npl: org.apache.spark.ml.Pipeline \u003d pipeline_4883359a99cb\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487650722269_414848355",
+      "id": "20170221-081842_666323874",
+      "dateCreated": "Feb 21, 2017 8:18:42 AM",
+      "dateStarted": "Feb 21, 2017 8:54:06 AM",
+      "dateFinished": "Feb 21, 2017 8:54:06 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Run the pipeline to fit the training data",
+      "text": "val model \u003d pl.fit(training)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 8:58:01 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nmodel: org.apache.spark.ml.PipelineModel \u003d pipeline_4883359a99cb\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487652436104_1013783088",
+      "id": "20170221-084716_345159987",
+      "dateCreated": "Feb 21, 2017 8:47:16 AM",
+      "dateStarted": "Feb 21, 2017 8:54:10 AM",
+      "dateFinished": "Feb 21, 2017 8:54:12 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create the test data",
+      "text": "val test \u003d spark.createDataFrame(\n    Seq(\n        (1, \"The drinks were brilliant\"))).toDF(\"id\", \"review\")",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 8:58:32 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ntest: org.apache.spark.sql.DataFrame \u003d [id: int, review: string]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487652489161_729361705",
+      "id": "20170221-084809_644097777",
+      "dateCreated": "Feb 21, 2017 8:48:09 AM",
+      "dateStarted": "Feb 21, 2017 8:54:19 AM",
+      "dateFinished": "Feb 21, 2017 8:54:20 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Use the model to predict the test data",
+      "text": "model.transform(test).select(\"review\", \"prediction\").show(false)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 8:58:52 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+-------------------------+----------+\n|review                   |prediction|\n+-------------------------+----------+\n|The drinks were brilliant|1.0       |\n+-------------------------+----------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487652630062_1495087287",
+      "id": "20170221-085030_1778164954",
+      "dateCreated": "Feb 21, 2017 8:50:30 AM",
+      "dateStarted": "Feb 21, 2017 8:54:53 AM",
+      "dateFinished": "Feb 21, 2017 8:54:54 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487652704720_-687300419",
+      "id": "20170221-085144_1526673226",
+      "dateCreated": "Feb 21, 2017 8:51:44 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "ML Pipeline",
+  "id": "2CB1FC65W",
+  "angularObjects": {
+    "2C9N29A4D:shared_process": [],
+    "2CADRTPFD:shared_process": [],
+    "2CAXEAWF8:shared_process": [],
+    "2CBJ8WFZJ:shared_process": [],
+    "2C9ZFQREF:shared_process": [],
+    "2CCASCT5D:shared_process": [],
+    "2CB5HZVQP:shared_process": [],
+    "2CAQVA5EW:shared_process": [],
+    "2C9Y5KYWU:shared_process": [],
+    "2CAD1Q8XM:shared_process": [],
+    "2CA6SKJ8G:shared_process": [],
+    "2CBK4SF7K:shared_process": [],
+    "2C98FTCSH:shared_process": [],
+    "2CA4ZK2SB:shared_process": [],
+    "2C9TQT5S3:shared_process": [],
+    "2C8Y3VX37:shared_process": [],
+    "2C9QPQZTR:shared_process": [],
+    "2C8KW2WY5:shared_process": [],
+    "2CABNR9Q6:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

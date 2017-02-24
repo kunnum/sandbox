@@ -1,0 +1,237 @@
+{
+  "paragraphs": [
+    {
+      "title": "Function to check a number is prime",
+      "text": "def isPrime(n: Int) \u003d (2 until n) forall (n % _ !\u003d 0)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 7:43:51 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nisPrime: (n: Int)Boolean\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487647619188_-85339942",
+      "id": "20170221-072659_1610467867",
+      "dateCreated": "Feb 21, 2017 7:26:59 AM",
+      "dateStarted": "Feb 21, 2017 7:43:51 AM",
+      "dateFinished": "Feb 21, 2017 7:43:52 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create a list of natural numbers from 2 -\u003e 100",
+      "text": "val l \u003d List.range(2, 100)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 7:44:35 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nl: List[Int] \u003d List(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99)\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487648354568_741329437",
+      "id": "20170221-073914_330412089",
+      "dateCreated": "Feb 21, 2017 7:39:14 AM",
+      "dateStarted": "Feb 21, 2017 7:43:51 AM",
+      "dateFinished": "Feb 21, 2017 7:43:53 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Sum of prime squares - Scala - Strict",
+      "text": "l.filter(isPrime).map(x \u003d\u003e x * x).reduce(_ + _)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 7:44:22 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nres14: Int \u003d 65796\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487647852144_1156381031",
+      "id": "20170221-073052_1640344079",
+      "dateCreated": "Feb 21, 2017 7:30:52 AM",
+      "dateStarted": "Feb 21, 2017 7:43:53 AM",
+      "dateFinished": "Feb 21, 2017 7:43:54 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create an RDD from the list",
+      "text": "val rdd \u003d sc.parallelize(l)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 7:43:51 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nrdd: org.apache.spark.rdd.RDD[Int] \u003d ParallelCollectionRDD[7] at parallelize at \u003cconsole\u003e:29\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487647880960_886134062",
+      "id": "20170221-073120_1887825534",
+      "dateCreated": "Feb 21, 2017 7:31:20 AM",
+      "dateStarted": "Feb 21, 2017 7:43:53 AM",
+      "dateFinished": "Feb 21, 2017 7:43:54 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Sum of prime squares - Spark - Lazy",
+      "text": "rdd.filter(isPrime).map(x \u003d\u003e x * x).reduce(_ + _)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 7:44:29 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nres15: Int \u003d 65796\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487648404956_1830446304",
+      "id": "20170221-074004_374816574",
+      "dateCreated": "Feb 21, 2017 7:40:04 AM",
+      "dateStarted": "Feb 21, 2017 7:43:54 AM",
+      "dateFinished": "Feb 21, 2017 7:43:55 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "dateUpdated": "Feb 21, 2017 7:43:51 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487648443022_-1714199340",
+      "id": "20170221-074043_887323650",
+      "dateCreated": "Feb 21, 2017 7:40:43 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Scala - Spark",
+  "id": "2CA9YDQN7",
+  "angularObjects": {
+    "2C9N29A4D:shared_process": [],
+    "2CADRTPFD:shared_process": [],
+    "2CAXEAWF8:shared_process": [],
+    "2CBJ8WFZJ:shared_process": [],
+    "2C9ZFQREF:shared_process": [],
+    "2CCASCT5D:shared_process": [],
+    "2CB5HZVQP:shared_process": [],
+    "2CAQVA5EW:shared_process": [],
+    "2C9Y5KYWU:shared_process": [],
+    "2CAD1Q8XM:shared_process": [],
+    "2CA6SKJ8G:shared_process": [],
+    "2CBK4SF7K:shared_process": [],
+    "2C98FTCSH:shared_process": [],
+    "2CA4ZK2SB:shared_process": [],
+    "2C9TQT5S3:shared_process": [],
+    "2C8Y3VX37:shared_process": [],
+    "2C9QPQZTR:shared_process": [],
+    "2C8KW2WY5:shared_process": [],
+    "2CABNR9Q6:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

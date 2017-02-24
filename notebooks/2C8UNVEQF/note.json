@@ -1,0 +1,339 @@
+{
+  "paragraphs": [
+    {
+      "title": "Import the necessary classes",
+      "text": "import org.apache.spark.ml.Pipeline\nimport org.apache.spark.ml.classification.LogisticRegression\nimport org.apache.spark.ml.evaluation.BinaryClassificationEvaluator\nimport org.apache.spark.ml.feature.{HashingTF, Tokenizer}\nimport org.apache.spark.ml.linalg.Vector\nimport org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}\nimport org.apache.spark.sql.Row",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 10:11:04 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\nimport org.apache.spark.ml.Pipeline\n\nimport org.apache.spark.ml.classification.LogisticRegression\n\nimport org.apache.spark.ml.evaluation.BinaryClassificationEvaluator\n\nimport org.apache.spark.ml.feature.{HashingTF, Tokenizer}\n\nimport org.apache.spark.ml.linalg.Vector\n\nimport org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}\n\nimport org.apache.spark.sql.Row\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487743823639_1694220458",
+      "id": "20170222-101023_113279572",
+      "dateCreated": "Feb 22, 2017 10:10:23 AM",
+      "dateStarted": "Feb 22, 2017 10:10:44 AM",
+      "dateFinished": "Feb 22, 2017 10:10:45 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Set the training data",
+      "text": "val training \u003d spark.createDataFrame(Seq(\n  (0L, \"a b c d e spark\", 1.0),\n  (1L, \"b d\", 0.0),\n  (2L, \"spark f g h\", 1.0),\n  (3L, \"hadoop mapreduce\", 0.0),\n  (4L, \"b spark who\", 1.0),\n  (5L, \"g d a y\", 0.0),\n  (6L, \"spark fly\", 1.0),\n  (7L, \"was mapreduce\", 0.0),\n  (8L, \"e spark program\", 1.0),\n  (9L, \"a e c l\", 0.0),\n  (10L, \"spark compile\", 1.0),\n  (11L, \"hadoop software\", 0.0)\n)).toDF(\"id\", \"text\", \"label\")",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 10:11:38 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ntraining: org.apache.spark.sql.DataFrame \u003d [id: bigint, text: string ... 1 more field]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487743844418_504222758",
+      "id": "20170222-101044_1059180425",
+      "dateCreated": "Feb 22, 2017 10:10:44 AM",
+      "dateStarted": "Feb 22, 2017 10:11:38 AM",
+      "dateFinished": "Feb 22, 2017 10:11:39 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create the ML pipeline",
+      "text": "val tokenizer \u003d new Tokenizer()\n  .setInputCol(\"text\")\n  .setOutputCol(\"words\")\nval hashingTF \u003d new HashingTF()\n  .setInputCol(tokenizer.getOutputCol)\n  .setOutputCol(\"features\")\nval lr \u003d new LogisticRegression()\n  .setMaxIter(10)\nval pipeline \u003d new Pipeline()\n  .setStages(Array(tokenizer, hashingTF, lr))",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 10:12:24 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ntokenizer: org.apache.spark.ml.feature.Tokenizer \u003d tok_2fa24d7bda4b\n\nhashingTF: org.apache.spark.ml.feature.HashingTF \u003d hashingTF_4ee482319862\n\nlr: org.apache.spark.ml.classification.LogisticRegression \u003d logreg_66433ba04978\n\npipeline: org.apache.spark.ml.Pipeline \u003d pipeline_f9d4eab6ae97\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487743898875_-1115307956",
+      "id": "20170222-101138_1511278480",
+      "dateCreated": "Feb 22, 2017 10:11:38 AM",
+      "dateStarted": "Feb 22, 2017 10:12:07 AM",
+      "dateFinished": "Feb 22, 2017 10:12:09 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create the parameter grid",
+      "text": "val paramGrid \u003d new ParamGridBuilder()\n  .addGrid(lr.regParam, Array(0.1, 0.01))\n  .build()\n  ",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 10:14:51 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\n\n\n\n\n\nparamGrid: Array[org.apache.spark.ml.param.ParamMap] \u003d\nArray({\n\tlogreg_66433ba04978-regParam: 0.1\n}, {\n\tlogreg_66433ba04978-regParam: 0.01\n})\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487743927603_1958127555",
+      "id": "20170222-101207_379939925",
+      "dateCreated": "Feb 22, 2017 10:12:07 AM",
+      "dateStarted": "Feb 22, 2017 10:14:51 AM",
+      "dateFinished": "Feb 22, 2017 10:14:52 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create the cross validator with three folds",
+      "text": "val cv \u003d new CrossValidator()\n  .setEstimator(pipeline)\n  .setEvaluator(new BinaryClassificationEvaluator)\n  .setEstimatorParamMaps(paramGrid)\n  .setNumFolds(3)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 10:15:43 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ncv: org.apache.spark.ml.tuning.CrossValidator \u003d cv_9b424c178ce7\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487743976813_-919147313",
+      "id": "20170222-101256_1673733027",
+      "dateCreated": "Feb 22, 2017 10:12:56 AM",
+      "dateStarted": "Feb 22, 2017 10:15:43 AM",
+      "dateFinished": "Feb 22, 2017 10:15:43 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Train the cross validator",
+      "text": "val cvModel \u003d cv.fit(training)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 10:16:42 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ncvModel: org.apache.spark.ml.tuning.CrossValidatorModel \u003d cv_9b424c178ce7\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487744099328_1210589446",
+      "id": "20170222-101459_2111101988",
+      "dateCreated": "Feb 22, 2017 10:14:59 AM",
+      "dateStarted": "Feb 22, 2017 10:16:03 AM",
+      "dateFinished": "Feb 22, 2017 10:16:54 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create test data",
+      "text": "val test \u003d spark.createDataFrame(Seq(\n  (4L, \"spark i j k\"),\n  (5L, \"l m n\"),\n  (6L, \"mapreduce spark\"),\n  (7L, \"apache hadoop\")\n)).toDF(\"id\", \"text\")",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 10:17:38 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\ntest: org.apache.spark.sql.DataFrame \u003d [id: bigint, text: string]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487744163311_1983057968",
+      "id": "20170222-101603_1664811466",
+      "dateCreated": "Feb 22, 2017 10:16:03 AM",
+      "dateStarted": "Feb 22, 2017 10:17:24 AM",
+      "dateFinished": "Feb 22, 2017 10:17:25 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Perform Prediction",
+      "text": "cvModel.transform(test).select(\"id\", \"text\", \"probability\", \"prediction\").show(false)",
+      "user": "anonymous",
+      "dateUpdated": "Feb 22, 2017 10:10:23 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+---+---------------+----------------------------------------+----------+\n|id |text           |probability                             |prediction|\n+---+---------------+----------------------------------------+----------+\n|4  |spark i j k    |[0.2661287892091301,0.73387121079087]   |1.0       |\n|5  |l m n          |[0.9209302389399868,0.07906976106001314]|0.0       |\n|6  |mapreduce spark|[0.4429343598469927,0.5570656401530073] |1.0       |\n|7  |apache hadoop  |[0.8583692828862762,0.14163071711372374]|0.0       |\n+---+---------------+----------------------------------------+----------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487744244952_-659474099",
+      "id": "20170222-101724_133686221",
+      "dateCreated": "Feb 22, 2017 10:17:24 AM",
+      "dateStarted": "Feb 22, 2017 10:18:43 AM",
+      "dateFinished": "Feb 22, 2017 10:18:43 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487744304179_827454518",
+      "id": "20170222-101824_551195292",
+      "dateCreated": "Feb 22, 2017 10:18:24 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Model Tuning",
+  "id": "2C8UNVEQF",
+  "angularObjects": {
+    "2C9N29A4D:shared_process": [],
+    "2CADRTPFD:shared_process": [],
+    "2CAXEAWF8:shared_process": [],
+    "2CBJ8WFZJ:shared_process": [],
+    "2C9ZFQREF:shared_process": [],
+    "2CCASCT5D:shared_process": [],
+    "2CB5HZVQP:shared_process": [],
+    "2CAQVA5EW:shared_process": [],
+    "2C9Y5KYWU:shared_process": [],
+    "2CAD1Q8XM:shared_process": [],
+    "2CA6SKJ8G:shared_process": [],
+    "2CBK4SF7K:shared_process": [],
+    "2C98FTCSH:shared_process": [],
+    "2CA4ZK2SB:shared_process": [],
+    "2C9TQT5S3:shared_process": [],
+    "2C8Y3VX37:shared_process": [],
+    "2C9QPQZTR:shared_process": [],
+    "2C8KW2WY5:shared_process": [],
+    "2CABNR9Q6:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}
